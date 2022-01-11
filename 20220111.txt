@@ -1,0 +1,139 @@
+:Cisco 장비 종류
+	; Router
+		-> Modular Interface(I/F)
+			: I/F의 수를 결정하는 장비를 말한다.
+			: Module을 설치할 수 있는 공간을 'Slot(슬롯)'이라 한다.
+			: 종류
+				NM(Network Module): 큰 슬롯
+				WIC(Wan Interface Card): 작은 슬롯
+				T(WAN)		: Serial 
+				E(LAN)		: Ethernet
+				숫자		: I/F 개수
+			: 예
+				NM-1E(한 개의 포트를 가진 LAN용 모듈)
+					; 라우터와 스위치를 연결할 때 사용
+				WIC-2T(두 개의 포트를 가진 WAN용 모듈)
+					; 라우터와 라우터를 연결할 때 사용
+			(Module 02. p.65) 
+			1. NM slot
+			2. Interface
+			3. WIC Slot
+			4. ROM
+			5. Flash
+			6. CPU
+			7. RAM
+	; Cisco IOS(Internetworking(전용) Operating System) Software
+		; 특징
+			-> CMOS BIOS Utility
+			-> 네트워크 장비를 구동하기 위해서 일반적인 PC와 마찬가지로, OS가 필요하다.
+	
+	 			Open Boot PRom(기본 설정)          -
+	
+				 EEPROM(사용자에 의해 변경)	Complementaly Metal Oxide Semiconductor (chip)
+									Basic Impact Outpt System
+										Utility( 유용한 도구)
+				 NVRAM			          -
+
+
+
+		; 대표적인 장비: CPU, Memory, Flash, Interface 
+
+
+	; Router와 Switch의 초기 구성 차이점 
+		;Router는 초기구성 정보를 사용자가 지정해야 한다.
+			-> 초기구성 정보가 메모리에 저장되어있지 않기 때문에 기본설정, I/F까지 모두 지정해야 한다.
+		;Switch는 초기구성 정보를 메모리에 저장하고 있다.
+			-> 네트워크 장비를 연결하면 별도 설정없이 동작한다.
+
+	: IOS Device 구성을 위한 외부 접근 방식(외부에서 네트워크 장비에 접근하는 방법)
+		; Console Port를 이용한 접근 방식 (Console Cable_Serial Cable_을 이용)
+		; Auxiliary Port를 이용한 접근 방식 (AUX Port_모뎀_을 이용)
+		; Virtual Terminal을 이용한 접근 방식 (Telnet(원격으로 PC제어) 서비를 이용)
+		; TFTP를 이용한 접근방식 (다른 곳에서 만들어놓은 라우팅 구성 파일을 다운로드하고, 라우터에 적용해서 사용)
+		; HTTP를 이용한 접근방식 (웹을 통한 접근 방식을 이용)
+	
+	
+	: IOS CLI(Command Line Interface) 기능
+		;개요
+			->  IOS가 제공하는 가장 기본적인 사용자 Interface이다
+ 			->     CLI는 사용자가 명령어를 직접 입력하는 방식이다	(장비에 접근할 때의 모드)
+			->     IOS Device의 종류에 따라 다양한 명령어가 제공된다
+			->     Console안에서 명령어의 직접/간접 입력이 가능하다
+ 			->     실행모드는 크게 User Mode(사용자 모드, '>')와 Privileged Mode(관리자 모드, '#')가 있다
+ 			->     명령어 모드에 따라 다양한 Prompt를 제공한다
+			
+		; 실행모드 종류
+			-> User Mode
+				->  IOS의 기본 실행 모드이다
+				->     제한된 명령어만을 사용할 수 있다
+				->     다음과 같은 Prompt를 제공한다
+		
+			-> Privileged Mode
+
+		; Router 초기 시동
+			-> Router를 가동시키면 '###'로 표현되는 것을 볼 수 있는데, Flash Memory에 저장된 
+			    IOS Image를 RAM으로 복사하는 과정을 말한다.
+			-> 만약, IOS Image에 문제가 발생하게 되면, '실행 모드'로 진행이 안되고, 'rommon모드'로 
+			    진입하게 된다.(CMOS)
+			-> 시동 과정
+				STEP 1. Setup Mode(라우터 부팅)
+				          ↓
+				       ctrl + C	#######
+				          ↓
+				STEP 2. User Mode(라우터 부팅 후 출력)
+				          ↓
+				  enable	Router>
+				          ↓
+				STEP3. Privileged Mode(라우터의 모든 설정이 이루어지는 환경)	
+				          ↓
+				STEP4. 라우터 설정 Router#
+
+
+		; Router의 초기 상태 정보 검증
+			-> In RAM
+				•현재 DRAM에 저장된 정보를 표시
+				• 사용자가 수정한 정보는 runningconfig 파일에 저장
+				• Active Config 파일이므로 설정된 내용은 System에 적용되어 있음
+			-> In NVRAM
+				• NVRAM에 저장된 정보를 표시
+				• “copy running-config startupconfig”명령을 사용하여 NVRAM에 저장
+				• 이 정보는 Router Reload시에 Router를 초기 구성에 사용
+		
+: Static Routing
+	; 01.pkt
+		; Simulation => Auto Capture/Play => ping 보내면 시뮬 볼 수 있음
+		목적지가 Mac Address에 맞는지 안맞는지 직접 확인해서 기록, 보냄 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
