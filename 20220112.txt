@@ -1,0 +1,128 @@
+나가봤자 라우터가 IP를 못 잡음
+
+* Static Routing
+	:라우터에 입력할 때는 단계별 설정만 기억하면 된다.(by 사마달)
+		; Step1. 기본설정
+		; Step2. 라우팅 테이블
+		; Step3. 라우팅 프로토콜
+
+-> Step1. 기본설정
+
+	Router> ena 				: 사용자 모드에서 관리자 모드로 진입 
+
+	Router#  configure terminal			: 터미널 모드로 진입하는 단계
+		Enter configuration commands, one per line.  End with CNTL/Z.
+
+	Router(config)# no ip domain lookup		: 명령어를 잘못 입력했을 경우, DNS 검색을 금지
+						: 정상적인 명령어가 아닌 것을 입력하게 되면, DNS는 정상이라고 오판을 한 상태로 그냥 인식을 하게 됨 
+						: 따라서 이를 금지하기 위해서 위 명령어를 넣어주는 것
+
+	Router(config)# line console 0		: Console 모드로 진입, 제일 첫번째 모드를 0로 씀/
+
+	Router(config-line)# exec-timeout 0 0		: Console Session Time 설정(접속 상태를 유지하기 위해 필요한 것)
+
+	Router(config-line)# logging synchronous	: Console Input Message 동기화 설정 (위에 설정한 내용들을 설정 환경 적용하겠다는 의미)
+
+	Router(config-line)# exit		
+
+	Router(config)# hostname R1
+
+	R1(config)#
+
+=> WIC-T2 설정
+
+-> Step2. 라우팅 테이블
+	R1(config)# interface fastEthernet 0/0
+	R1(config-if)# ip address 192.168.10.254 255.255.255.0
+	R1(config-if)# no shutdown
+	R1(config-if)#
+		%LINK-5-CHANGED: Interface FastEthernet0/0, changed state to up
+		%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0, changed state to up
+	R1(config-if)# no sh
+	R1(config-if)# no shutdown 
+	R1(config-if)# exit
+	R1(config)# interface serial 0/0
+	R1(config-if)# ip address 201.100.10.1 255.255.255.252(=255-3)
+	R1(config-if)# no shutdown
+		%LINK-5-CHANGED: Interface Serial0/0, changed state to down
+	R1(config-if)# exit
+	R1(config)#
+
+-> Step3. 라우팅 프로토콜
+	
+	R1(config)# ip route 10.100.1.0 255.255.255.0 201.100.10.2
+	R2(config)# ip route 192.168.10.0 255.255.255.0 201.100.10.1
+
+ip route			: 명령어
+10.100.1.0 255.255.255.0	: R2의 내부망 대역
+201.100.10.2		: R1과 연결된 R2의 Serial Port
+
+ip route			: 명령어
+192.168.10.0 255.255.255.0 	: R1의 내부망 대역
+201.100.10.1		: R2와 연결된 R1의 Serial Port
+
+
+
+-> 라우터를 껐다 켜면 다시 초기 상태로 돌아옴 / CLI 창도 다시 껐다 켜기 / 10분 이내로 끝내야
+	
+	; 토폴로지 구성
+	; 기본설정
+	; 라우팅 테이블 설정
+	; 통신 테스트 1. PC1에서 PC3으로(안된다.)
+	; 라우팅 프로토콜 설정
+	; 통신 테스트 2. PC1에서 PC3으로(잘된다.)
+
+-> 항상 통신여부 확인해야 함!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
