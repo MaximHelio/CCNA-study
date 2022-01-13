@@ -1,0 +1,220 @@
+* 외부망과 연결된 router => default gateway라 부름
+* 32 - 30 = 2 (bit)
+* 4 || 2 1
+
+
+; Routing?
+	; 데이터를 최적의 경로(최단 경로)를 선택하여 목적지까지 이송하는 모든 절차
+	; IP Protocol이 올라가 있는 Router, Computer or Host, L-3 Ethernet Switch들이 이러한 작업이 가능
+	; 라우터가 데이터를 Routing하기 위하여 알아야 하는 것	
+		-> • 소스와 목적지 주소
+		    • 입/출력 인터페이스 형태
+	    	    • 가능성 있는 모든 경로(route)들에 대한 정보 수집
+	    	    • 가능성 있는 모든 경로 중에서 최적의 경로(최단 경로) 선택
+	   	    • 지속적인 네트워크 상태를 확인하고 유지하는 것
+
+; 유형
+	-> 라우터에 호스트들을 위한 IP를 부여하는 방법은 'Static, Dynamic'이 있다. 
+	-> Dynamic은 Static만 제대로 이해하면 전혀 어렵지 않다.
+
+
+; Module 5. 7p 
+	; Router (config) # ip route network mask { address|interface } [ distance ] [ permanent ]
+
+
+	Network 		: 도착지 Network ( 반대편 라우터의 내(외)부망 with Class 즉, 내부망 대역 )					: 10.100.1.0
+	Mask 		: 도착지 Network의 Subnet mask ( 반대편 라우터의 내(외)부망 with Class 즉, 내(외)부망의  Subnet Mask )		: 255.255.255.0
+	Address 		: 도착지 network로 도달하기 위한 Next-hop address ( 반대편 라우터의 외부망 주소 )				: 201.100.10.2
+	Interface 		: 도착지 network로 도달하기 위한 Next-hop Router와 연결된 local interface			
+	Distance 		: 정의된 Route의 Administrator Distance 값
+	Permanent 	: 정의된 Static Route가 Routing table에서 제거되지 않도록 한다.
+
+
+; show 명령어
+	; show ip route
+
+; 02.pkt
+	; pc들끼리 서로 통신되는지 확인( 정상 통신 )
+	; 라우팅 테이블 확인(show ip route)
+	; copy? 
+		-> 라우터에서 설정하고 있는 내용들은 RAM에 저장되는데, RAM의 특성상, 전원이 꺼지면,
+		    설정 내용 또한 모두 삭제가 되기 때문에, 백업이 반드시 필요하다.
+		-> 작업은 copy 명령을 이용하면 RAM의 내용을 NVRAM에 저장하는 명령을 실행하면 된다.
+		-> 따라서 RAM의 내용을 백업해 두게 되면, 만일의 사태에 대비할 수가 있다. 
+		-> 작업은 RAM의 내용을 NVRAM에 저장하는 과정을 통해 백업을 할 수 있다.
+		-> 백업 및 복구
+			: 백업 (RAM -> NVRAM)	copy running-config startup-config
+			: 복구 (NVRAM -> RAM)	copy startup-config running-config
+			껐다 켜면 RAM에 있는 건 날아감. 라우터란 게 껐다 켜면 NVRAM에 설정된 내용이 IOS에 포함된다. 
+			백업 되면서 메모리에 적재됨.
+			작업하는 도중 맛이 감 => 끌어다 초기화 시키지 않고, 켜져있는 상태에서 NVRAM에 적재
+		-> 백업 및 복구 내용 확인
+			: RAM 내용 확인 		show running-config 
+			: NVRAM 내용 확인	show startup-config
+	; 라우터 초기화
+
+R1# show ip route
+Codes: C - connected, S - static, I - IGRP, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+              P - periodic downloaded static route
+
+Gateway of last resort is not set
+
+     10.0.0.0/24 is subnetted, 1 subnets
+
+S    10.100.1.0 [1/0] via 201.100.10.2				: Static
+C    192.168.10.0/24 is directly connected, FastEthernet0/0	: Connect
+      201.100.10.0/30 is subnetted, 1 subnets
+C    201.100.10.0 is directly connected, Serial0/0
+
+
+
+![image-20220113163845739](C:\Users\1101-13\AppData\Roaming\Typora\typora-user-images\image-20220113163845739.png)
+
+R1# show-running config		: 메모리 RAM정보를 확인
+R1# show-startup-config		: NVRAM의 정보를 확인
+R1# show ip interface brief		: 라우트에 연결된 인터페이스와 적용된 IP주소 내용 확인
+R1# show interfaces 		: 라우트에 장착된 모든 인터페이스의 상세한 정보를 확인
+R1# show interfaces serial 0/0	: 특정포트 정보를 확인
+
+R1# erase startup-config
+	Erase of nvram: complete
+R1# reload			: 재부팅
+
+Router# show startup-config
+	startup-config is not present
+
+
+
+; 전원 부팅 시, #####이 뜰 때(IOS를 로딩하는 것),  ctrl + break를 누른다.
+
+; ^ + break 
+
+​		reset
+
+​		enable : RAM에 설정정보 안 올라올 때 start-config에서 복구할 것
+
+​		conf t
+
+; 암호 분실시, 삭제하고 Rommon Mode_CMOS로 들어가기
+
+; 비밀번호를 모르거나 알 수가 없을 때 초기화하기
+
+R1(config)
+
+```
+R1>en
+R1#show ip
+R1#show ip ro
+R1#sh ipr
+R1#sh ip r
+R1#"sh ip r"
+R1#show ip route
+Codes: C - connected, S - static, I - IGRP, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is not set
+
+     10.0.0.0/24 is subnetted, 1 subnets
+S       10.100.1.0 [1/0] via 201.100.10.2
+C    192.168.10.0/24 is directly connected, FastEthernet0/0
+     201.100.10.0/30 is subnetted, 1 subnets
+C       201.100.10.0 is directly connected, Serial0/0
+R1#
+R1#show run
+R1#show running-config
+Building configuration...
+
+Current configuration : 756 bytes
+!
+version 12.2
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname R1
+
+R1#System Bootstrap, Version 12.1(3r)T2, RELEASE SOFTWARE (fc1)
+Copyright (c) 2000 by cisco Systems, Inc.
+Initializing memory for ECC
+..
+c2811 processor with 524288 Kbytes of main memory
+Main memory is configured to 64 bit mode with ECC enabled
+
+Readonly ROMMON initialized
+
+Self decompressing the image :
+########################################################################## [OK]
+
+              Restricted Rights Legend
+
+Use, duplication, or disclosure by the Government is
+subject to restrictions as set forth in subparagraph
+(c) of the Commercial Computer Software - Restricted
+Rights clause at FAR sec. 52.227-19 and subparagraph
+(c) (1) (ii) of the Rights in Technical Data and Computer
+Software clause at DFARS sec. 252.227-7013.
+
+           cisco Systems, Inc.
+           170 West Tasman Drive
+           San Jose, California 95134-1706
+
+
+Cisco Internetwork Operating System Software
+IOS (tm) C2600 Software (C2600-I-M), Version 12.2(28), RELEASE SOFTWARE (fc5)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2005 by cisco Systems, Inc.
+Compiled Wed 27-Apr-04 19:01 by miwang
+
+Cisco 2621 (MPC860) processor (revision 0x200) with 253952K/8192K bytes of memory
+.
+Processor board ID JAD05190MTZ (4292891495)
+M860 processor: part number 0, mask 49
+Bridging software.
+X.25 software, Version 3.0.0.
+2 FastEthernet/IEEE 802.3 interface(s)
+2 Low-speed serial(sync/async) network interface(s)
+32K bytes of non-volatile configuration memory.
+63488K bytes of ATA CompactFlash (Read/Write)
+
+         --- System Configuration Dialog ---
+
+Continue with configuration dialog? [yes/no]: 
+% Please answer 'yes' or 'no'.
+Continue with configuration dialog? [yes/no]: 
+
+Press RETURN to get started!
+
+
+Router>
+Router>en
+Router#show startup-config
+startup-config is not present
+Router#
+
+
+
+Router con0 is now available
+
+
+Press RETURN to get started.
+
+
+Router>ena
+Router#
+Router#
+
+R2# copy running-config
+
+
+```
+
